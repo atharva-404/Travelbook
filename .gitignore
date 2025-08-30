@@ -1,0 +1,4 @@
+*.pyc
+/travel_booking/venv
+*.po
+/venv

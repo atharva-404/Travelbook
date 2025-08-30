@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Book Travel - Travel Booking{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4><i class="fas fa-ticket-alt"></i> Book Your Travel</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {% crispy form %}
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header bg-{{ travel.travel_type }} text-white">
+                <h5>
+                    <i class="fas fa-{% if travel.travel_type == 'flight' %}plane{% elif travel.travel_type == 'train' %}train{% else %}bus{% endif %}"></i>
+                    Travel Details
+                </h5>
+            </div>
+            <div class="card-body">
+                <h6 class="card-title">{{ travel.source }} → {{ travel.destination }}</h6>
+                <hr>
+                <p><strong>Travel ID:</strong> {{ travel.travel_id }}</p>
+                <p><strong>Type:</strong> {{ travel.get_travel_type_display }}</p>
+                <p><strong>Date:</strong> {{ travel.departure_date }}</p>
+                <p><strong>Departure:</strong> {{ travel.departure_time }}</p>
+                <p><strong>Arrival:</strong> {{ travel.arrival_time }}</p>
+                <p><strong>Price per seat:</strong> ₹{{ travel.price }}</p>
+                <p><strong>Available seats:</strong> {{ travel.available_seats }}</p>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header bg-info text-white">
+                <h6><i class="fas fa-calculator"></i> Price Calculator</h6>
+            </div>
+            <div class="card-body">
+                <div id="price-calculator">
+                    <p>Number of seats: <span id="seat-count">1</span></p>
+                    <p>Price per seat: ₹{{ travel.price }}</p>
+                    <hr>
+                    <h5>Total: ₹<span id="total-price">{{ travel.price }}</span></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const seatInput = document.getElementById('id_number_of_seats');
+    const seatCount = document.getElementById('seat-count');
+    const totalPrice = document.getElementById('total-price');
+    const pricePerSeat = {{ travel.price }};
+    
+    function updatePrice() {
+        const seats = parseInt(seatInput.value) || 1;
+        seatCount.textContent = seats;
+        totalPrice.textContent = (seats * pricePerSeat).toFixed(2);
+    }
+    
+    seatInput.addEventListener('input', updatePrice);
+    updatePrice();
+});
+</script>
+{% endblock %}

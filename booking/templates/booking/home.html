@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Travel Booking{% endblock %}
+
+{% block content %}
+<div class="hero-section bg-primary text-white text-center py-5 mb-5 rounded">
+    <div class="container">
+        <h1 class="display-4">Welcome to TravelBook</h1>
+        <p class="lead">Book your next adventure with ease</p>
+        <a href="{% url 'travel_list' %}" class="btn btn-light btn-lg">
+            <i class="fas fa-search"></i> Find Travels
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <h2 class="mb-4">Recent Travel Options</h2>
+        <div class="row">
+            {% for travel in recent_travels %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-header bg-{{ travel.travel_type|default:'secondary' }}">
+                        <i class="fas fa-{% if travel.travel_type == 'flight' %}plane{% elif travel.travel_type == 'train' %}train{% else %}bus{% endif %}"></i>
+                        {{ travel.get_travel_type_display }}
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{ travel.source }} → {{ travel.destination }}</h5>
+                        <p class="card-text">
+                            <strong>Date:</strong> {{ travel.departure_date }}<br>
+                            <strong>Time:</strong> {{ travel.departure_time }}<br>
+                            <strong>Price:</strong> ₹{{ travel.price }}<br>
+                            <strong>Available:</strong> {{ travel.available_seats }} seats
+                        </p>
+                    </div>
+                    <div class="card-footer">
+                        {% if user.is_authenticated %}
+                        <a href="{% url 'book_travel' travel.id %}" class="btn btn-success btn-sm">
+                            <i class="fas fa-ticket-alt"></i> Book Now
+                        </a>
+                        {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-primary btn-sm">Login to Book</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> No travel options available at the moment.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% if not user.is_authenticated %}
+<div class="row mt-5">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">New User?</h5>
+                <p class="card-text">Join thousands of travelers who trust us with their bookings.</p>
+                <a href="{% url 'register' %}" class="btn btn-primary">Register Now</a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Already have an account?</h5>
+                <p class="card-text">Login to access your bookings and make new reservations.</p>
+                <a href="{% url 'login' %}" class="btn btn-outline-primary">Login</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
