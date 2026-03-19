@@ -16,6 +16,7 @@ A comprehensive Django web application for booking travel tickets (Flight, Train
 
 ## Requirements
 
+
 - Python 3.8+
 - MySQL 8.0+
 - Django 4.2+
