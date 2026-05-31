@@ -14,6 +14,7 @@ A comprehensive Django web application for booking travel tickets (Flight, Train
 - MySQL database integration
 - Unit tests coverage
 
+
 ## Requirements
 
 - Python 3.8+
